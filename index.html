@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rihas | Power BI & BI Developer Interview Mastery OS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            pbi: {
+              yellow: '#F2C811',
+              amber: '#F59E0B',
+              dark: '#0B0F19',
+              card: '#111827',
+              border: '#1F2937'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0B0F19;
+      color: #F3F4F6;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0F19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4B5563;
+    }
+    .glass-panel {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .custom-checkbox:checked + span {
+      text-decoration: line-through;
+      color: #6B7280;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-pbi-yellow selection:text-black">
+
+  <!-- Top Sticky Header -->
+  <header class="sticky top-0 z-50 glass-panel border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-pbi-yellow to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 text-black font-extrabold text-xl">
+          BI
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-lg sm:text-xl tracking-tight text-white">Power BI End-to-End Mastery OS</h1>
+            <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-pbi-yellow border border-amber-500/30">
+              4–5 YOE Target
+            </span>
+          </div>
+          <p class="text-xs text-gray-400">Rihas Ahamed Habeeb • Senior Data Analyst / Power BI & BI Developer Prep</p>
+        </div>
+      </div>
+
+      <!-- Global Progress Bar & Study Timer -->
+      <div class="flex items-center gap-6">
+        <!-- Live Pomeranian/Focus Timer -->
+        <div class="hidden lg:flex items-center gap-2 bg-gray-900/90 border border-gray-800 px-3.5 py-1.5 rounded-xl">
+          <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="timer-dot"></div>
+          <span class="font-mono text-sm font-semibold text-gray-200" id="timer-display">90:00</span>
+          <button onclick="toggleTimer()" id="timer-btn" class="text-xs px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 text-pbi-yellow font-medium transition">Start 90m</button>
+          <button onclick="resetTimer()" class="text-xs text-gray-500 hover:text-gray-300 px-1">↺</button>
+        </div>
+
+        <div class="w-44 sm:w-60">
+          <div class="flex justify-between text-xs mb-1">
+            <span class="text-gray-400 font-medium">Overall Mastery</span>
+            <span class="text-pbi-yellow font-mono font-bold" id="global-progress-text">0%</span>
+          </div>
+          <div class="w-full h-2.5 bg-gray-800 rounded-full overflow-hidden p-0.5 border border-gray-700">
+            <div id="global-progress-bar" class="h-full bg-gradient-to-r from-amber-500 to-pbi-yellow rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <button onclick="exportBackup()" title="Export/Reset Progress" class="p-2 rounded-lg bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 text-xs font-medium">
+          ⚙️ Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto border-t border-gray-800/80 no-scrollbar">
+      <button onclick="switchTab('modules')" id="tab-modules" class="nav-tab px-5 py-3 text-sm font-semibold border-b-2 border-pbi-yellow text-pbi-yellow whitespace-nowrap flex items-center gap-2">
+        <span>📚 12-Module Syllabus & Scenarios</span>
+      </button>
+      <button onclick="switchTab('codevault')" id="tab-codevault" class="nav-tab px-5 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 whitespace-nowrap flex items-center gap-2">
+        <span>⚡ DAX, M & SQL Code Vault</span>
+      </button>
+      <button onclick="switchTab('projects')" id="tab-projects" class="nav-tab px-5 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 whitespace-nowrap flex items-center gap-2">
+        <span>🛡️ 3-Project Defense Studio</span>
+      </button>
+      <button onclick="switchTab('scorecard')" id="tab-scorecard" class="nav-tab px-5 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 whitespace-nowrap flex items-center gap-2">
+        <span>🎯 Readiness Scorecard (<span id="scorecard-badge">0/10</span>)</span>
+      </button>
+      <button onclick="switchTab('roadmap')" id="tab-roadmap" class="nav-tab px-5 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 whitespace-nowrap flex items-center gap-2">
+        <span>🗓️ 6-Week Execution & Strategy</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- ==================== TAB 1: 12-MODULE SYLLABUS ==================== -->
+    <section id="view-modules" class="space-y-8">
+      <!-- Top Hero Banner + 5-Step Routine -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 glass-panel rounded-2xl p-6 border border-gray-800 relative overflow-hidden">
+          <div class="absolute -right-10 -top-10 w-44 h-44 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="flex flex-wrap gap-2 mb-3">
+            <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-500/20 text-pbi-yellow">12 Modules</span>
+            <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-500/20 text-blue-300">Hands-On First: DAX, SQL, M, Debugging</span>
+            <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-500/20 text-emerald-300">Indian Scenarios: GST, FY Apr-Mar, HR, Finance</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">Turn Experience into End-to-End Interview Mastery</h2>
+          <p class="text-sm text-gray-300 leading-relaxed mb-4">
+            Built around your background in <strong>Power BI, DAX, Power Query, Advanced SQL, Alteryx, Semantic Models, RLS, and Custom SVG/HTML Visuals</strong> across Marketing, HR, and Finance. Check off concepts as you prove them hands-on, practice Indian business scenarios aloud, and pass each module's Mastery Gate before advancing.
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-3">
+              <div class="text-xs text-gray-400">Concepts Mastered</div>
+              <div class="text-lg font-bold text-white font-mono mt-0.5" id="stat-concepts">0 / 0</div>
+            </div>
+            <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-3">
+              <div class="text-xs text-gray-400">Indian Scenarios</div>
+              <div class="text-lg font-bold text-emerald-400 font-mono mt-0.5" id="stat-scenarios">0 / 0</div>
+            </div>
+            <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-3">
+              <div class="text-xs text-gray-400">Mastery Gates Passed</div>
+              <div class="text-lg font-bold text-pbi-yellow font-mono mt-0.5" id="stat-tests">0 / 12</div>
+            </div>
+            <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-3">
+              <div class="text-xs text-gray-400">Target Pace</div>
+              <div class="text-lg font-bold text-blue-400 font-mono mt-0.5">6 Wks • 2h/d</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The 5-Step Module Routine Card -->
+        <div class="glass-panel rounded-2xl p-6 border border-gray-800 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold uppercase tracking-wider text-pbi-yellow">Mandatory 5-Step Module Routine</h3>
+              <span class="text-xs text-gray-400">Sequential</span>
+            </div>
+            <ol class="space-y-2.5 text-sm">
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-gray-800 text-pbi-yellow text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+                <span class="text-gray-300"><strong class="text-white">Learn the concept:</strong> Understand internal engine mechanics (VertiPaq, folding, filter context).</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-gray-800 text-pbi-yellow text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+                <span class="text-gray-300"><strong class="text-white">Implement hands-on:</strong> Build it in Power BI Desktop / SQL / DAX Studio without notes.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-gray-800 text-pbi-yellow text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+                <span class="text-gray-300"><strong class="text-white">Answer aloud:</strong> Practice crisp 90-second architectural explanations.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-gray-800 text-pbi-yellow text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+                <span class="text-gray-300"><strong class="text-white">Solve an Indian scenario:</strong> Handle GST, April–March FY, messy Excel & reconciliation.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-gray-800 text-pbi-yellow text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span>
+                <span class="text-gray-300"><strong class="text-white">Pass the Mastery Test:</strong> Prove the skill end-to-end before unlocking the next module.</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Search Bar -->
+      <div class="flex flex-col sm:flex-row gap-4 items-center justify-between glass-panel p-4 rounded-xl border border-gray-800">
+        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+          <button onclick="filterPhase('all')" id="phase-btn-all" class="phase-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-pbi-yellow text-black transition">All 12 Modules</button>
+          <button onclick="filterPhase(1)" id="phase-btn-1" class="phase-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Phase 1: Core & ETL (M1–M2)</button>
+          <button onclick="filterPhase(2)" id="phase-btn-2" class="phase-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Phase 2: Modeling & DAX (M3–M5)</button>
+          <button onclick="filterPhase(3)" id="phase-btn-3" class="phase-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Phase 3: Perf, Service & RLS (M6–M9)</button>
+          <button onclick="filterPhase(4)" id="phase-btn-4" class="phase-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Phase 4: UX, SQL & Defense (M10–M12)</button>
+        </div>
+        <div class="relative w-full sm:w-72">
+          <input type="text" id="module-search" oninput="renderModules()" placeholder="Filter topics (e.g. GST, CALCULATE, RLS)..." class="w-full bg-gray-900 border border-gray-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-pbi-yellow">
+          <span class="absolute left-3 top-2.5 text-gray-500 text-xs">🔍</span>
+        </div>
+      </div>
+
+      <!-- Modules Grid Container -->
+      <div id="modules-container" class="space-y-6"></div>
+    </section>
+
+    <!-- ==================== TAB 2: CODE VAULT (DAX, M, SQL) ==================== -->
+    <section id="view-codevault" class="hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-gray-800">
+        <h2 class="text-xl font-bold text-white mb-1">⚡ Production Code Vault: Indian Interview Classics</h2>
+        <p class="text-sm text-gray-400">Copy-ready, interview-tested patterns for the exact coding questions asked in 4–5 YOE Indian technical rounds. Practice writing these on a blank notepad without IntelliSense.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="codevault-container">
+        <!-- Rendered dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: 3-PROJECT DEFENSE STUDIO ==================== -->
+    <section id="view-projects" class="hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-gray-800">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-pbi-yellow">Module 12 Deep-Dive Studio</span>
+            <h2 class="text-xl font-bold text-white mt-1">End-to-End Project Walkthrough & Cross-Examination Defense</h2>
+            <p class="text-sm text-gray-400 mt-1">
+              Use actual project details and defensible metrics from your work. Never invent unverified claims—document your exact architecture, grain, DAX challenges, and validation steps below. Everything auto-saves locally.
+            </p>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button onclick="selectProject('A')" id="proj-tab-A" class="px-4 py-2 rounded-xl text-xs font-bold bg-pbi-yellow text-black transition">Project A: Marketing</button>
+            <button onclick="selectProject('B')" id="proj-tab-B" class="px-4 py-2 rounded-xl text-xs font-bold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Project B: HR & Workforce</button>
+            <button onclick="selectProject('C')" id="proj-tab-C" class="px-4 py-2 rounded-xl text-xs font-bold bg-gray-800 text-gray-300 hover:bg-gray-700 transition">Project C: Finance & Recon</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="project-defense-container"></div>
+    </section>
+
+    <!-- ==================== TAB 4: READINESS SCORECARD (0/10) ==================== -->
+    <section id="view-scorecard" class="hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-gray-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Final Quality Gate</span>
+          <h2 class="text-2xl font-bold text-white mt-1">The Interview Readiness Scorecard</h2>
+          <p class="text-sm text-gray-400 mt-1">Treat this as a strict engineering quality gate—only toggle a pillar when you can execute and defend it live under interview questioning without notes.</p>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 px-6 py-4 rounded-2xl flex items-center gap-4 shrink-0">
+          <div class="text-right">
+            <div class="text-xs text-gray-400 uppercase font-semibold">Readiness Score</div>
+            <div class="text-3xl font-extrabold text-pbi-yellow font-mono" id="scorecard-big-number">0 / 10</div>
+          </div>
+          <div id="scorecard-status-pill" class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            In Progress
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="scorecard-grid">
+        <!-- Populated via JS -->
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: 6-WEEK EXECUTION & STRATEGY ==================== -->
+    <section id="view-roadmap" class="hidden space-y-8">
+      <!-- 6-Week Execution Table -->
+      <div class="glass-panel rounded-2xl p-6 border border-gray-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">🗓️ Six-Week Execution Plan (1.5–2 Focused Hours/Day)</h2>
+            <p class="text-sm text-gray-400">Keep SQL practice running throughout all six weeks rather than leaving it until Week 5.</p>
+          </div>
+          <span class="px-3 py-1 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-semibold">
+            Sequential Progression: M1 → M2 → M3 → M4
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="weeks-container">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+
+      <!-- Indian Interview Tier Matrix -->
+      <div class="glass-panel rounded-2xl p-6 border border-gray-800">
+        <h3 class="text-lg font-bold text-white mb-2">🇮🇳 How to Adapt Your Pitch for Indian Interview Styles</h3>
+        <p class="text-sm text-gray-400 mb-6">Tailor your depth and emphasis depending on whether you are interviewing with a Service IT giant, a Big 4 / Analytics consultancy, or a Product / Mature BI engineering team.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded text-xs font-bold bg-blue-500/20 text-blue-300">Tier 1: Service-Based IT</span>
+              <span class="text-xs text-gray-500">TCS, Infosys, Wipro, Cognizant, LTIMindtree</span>
+            </div>
+            <h4 class="font-bold text-white text-base">Coding Accuracy & Core Troubleshooting</h4>
+            <ul class="text-xs text-gray-300 space-y-2 list-disc pl-4">
+              <li><strong>DAX Live Coding:</strong> Expect screen-share tests on <code class="text-amber-300">CALCULATE</code>, <code class="text-amber-300">ALL</code> vs <code class="text-amber-300">ALLSELECTED</code>, <code class="text-amber-300">RANKX</code>, and Time Intelligence.</li>
+              <li><strong>SQL Window Functions:</strong> Top N per department, deduplicating GST invoices with <code class="text-amber-300">ROW_NUMBER()</code>, running totals.</li>
+              <li><strong>Power Query & Service:</strong> Merge vs Append row explosion, Gateway credential failures, and Dynamic vs Static RLS setups.</li>
+            </ul>
+          </div>
+
+          <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded text-xs font-bold bg-purple-500/20 text-purple-300">Tier 2: Consulting & Analytics</span>
+              <span class="text-xs text-gray-500">Deloitte, EY, KPMG, PwC, Tiger, MuSigma, Fractal</span>
+            </div>
+            <h4 class="font-bold text-white text-base">Business Framing, Reconciliation & Trade-offs</h4>
+            <ul class="text-xs text-gray-300 space-y-2 list-disc pl-4">
+              <li><strong>Stakeholder Translation:</strong> Why you chose specific KPIs (ROAS, CPA, Margin Bridge) and how you structured Executive vs Drill-through views.</li>
+              <li><strong>End-to-End Ownership:</strong> Combining upstream Alteryx/SQL prep with downstream Power BI modeling.</li>
+              <li><strong>Number Reconciliation:</strong> How you proved to a Finance VP or Marketing Director that Power BI matched source ERP/Redshift down to the rupee.</li>
+            </ul>
+          </div>
+
+          <div class="bg-gray-900/90 border border-gray-800 rounded-xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-1 rounded text-xs font-bold bg-emerald-500/20 text-emerald-300">Tier 3: Product & Mature BI</span>
+              <span class="text-xs text-gray-500">GCCs, FinTech, SaaS, E-Commerce</span>
+            </div>
+            <h4 class="font-bold text-white text-base">Engine Internals, Scale & CI/CD Governance</h4>
+            <ul class="text-xs text-gray-300 space-y-2 list-disc pl-4">
+              <li><strong>VertiPaq & Profiling:</strong> Formula Engine vs Storage Engine, dictionary/RLE compression, cardinality reduction, DAX Studio Server Timings.</li>
+              <li><strong>Enterprise Architecture:</strong> Composite models, Direct Lake in Microsoft Fabric, aggregations on 25M+ row tables, Redshift/Azure integration.</li>
+              <li><strong>BI Engineering:</strong> Tabular Editor Calculation Groups, ALM Toolkit schema diffs, Deployment Pipelines, and Git version control.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Data Management Modal -->
+  <div id="data-modal" class="fixed inset-0 z-50 hidden bg-black/75 flex items-center justify-center p-4">
+    <div class="glass-panel max-w-md w-full rounded-2xl p-6 border border-gray-700 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-lg text-white">Progress Backup & Reset</h3>
+        <button onclick="closeDataModal()" class="text-gray-400 hover:text-white">✕</button>
+      </div>
+      <p class="text-xs text-gray-300">All checkboxes, readiness scores, and project defense notes are stored automatically in your browser's <code class="text-pbi-yellow">localStorage</code>. You can export a JSON backup or reset your tracker below.</p>
+      <div class="flex flex-col gap-2.5 pt-2">
+        <button onclick="downloadBackupJSON()" class="w-full py-2.5 px-4 rounded-xl bg-pbi-yellow text-black font-bold text-xs hover:bg-amber-400 transition">
+          ⬇️ Download Progress Backup (.json)
+        </button>
+        <button onclick="resetAllProgress()" class="w-full py-2.5 px-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-semibold text-xs hover:bg-red-500/20 transition">
+          🗑️ Reset All Checkboxes & Notes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Data & Logic -->
+  <script>
+    // =========================================================================
+    // 1. COMPLETE SYLLABUS DATA (ALL 12 MODULES + INDIAN SCENARIOS + HINTS)
+    // =========================================================================
+    const SYLLABUS_MODULES = [
+      {
+        id: "m1",
+        num: 1,
+        phase: 1,
+        phaseName: "Phase 1 — Core Power BI Skills",
+        title: "Power BI Architecture and End-to-End Workflow",
+        priority: "Critical",
+        learn: [
+          "Power BI Desktop, Power BI Service, semantic models, reports and dashboards.",
+          "Data sources, connectors and authentication (OAuth2, Windows, Database, Service Principal).",
+          "The complete flow: source data → Power Query → semantic model → DAX → visuals → Service.",
+          "Difference between a report, dashboard, semantic model and workspace.",
+          "How Power BI interacts with SQL Server, Excel, APIs, cloud storage (AWS S3/Azure Blob) and data warehouses (Redshift/Synapse).",
+          "Import, DirectQuery and Live connections at a conceptual level."
+        ],
+        scenarios: [
+          "A client sends daily Excel files containing sales data. Explain how you would automate reporting.",
+          "A company has data in SQL Server, AWS S3 and Excel. How would you connect and combine it?",
+          "A business user says their report is not showing yesterday's sales. Explain how you would investigate."
+        ],
+        masteryTest: "Draw the complete architecture of one of your projects and explain every stage, including where transformations occur and where data is stored.",
+        interviewBlueprint: `• Daily Excel Automation: Land daily attachments via Power Automate into a SharePoint Document Library / OneDrive for Business folder -> Connect Power BI via SharePoint Folder connector -> Filter by extension & combine via a custom M function -> Schedule cloud refresh without needing an on-prem gateway.
+• Yesterday's Sales Missing Triage (Top-Down): 1) Check visual/page/report-level filters or relative date slicers (UTC vs IST offset in Power BI Service!). 2) Check Semantic Model Refresh History (did the refresh succeed, or did it run before the upstream ETL batch finished?). 3) Check Power Query filters/incremental refresh range. 4) Query the source SQL/Redshift table directly to verify if yesterday's rows loaded upstream.`
+      },
+      {
+        id: "m2",
+        num: 2,
+        phase: 1,
+        phaseName: "Phase 1 — Core Power BI Skills",
+        title: "Power Query, M and ETL",
+        priority: "Critical",
+        learn: [
+          "Query Editor interface and Applied Steps management.",
+          "Data types, nulls, errors and missing values handling without breaking refresh.",
+          "Merge (horizontal join) vs. Append (vertical union).",
+          "Pivot, Unpivot, Group By and conditional columns.",
+          "Joins (Left Outer, Inner, Left Anti, Right Anti), fuzzy matching and duplicate handling.",
+          "M language syntax: let, in, lists {}, records [], tables #table() and custom functions (=>).",
+          "Parameters, reusable functions and dynamic file ingestion.",
+          "Query folding: how it works, viewing Native Query, and identifying folding breaks.",
+          "Data profiling (Column quality, distribution, profile on entire dataset), validation and source-to-target reconciliation.",
+          "Incremental refresh prerequisites (RangeStart & RangeEnd DateTime parameters) and Power Query design considerations."
+        ],
+        scenarios: [
+          "Combine 12 monthly sales Excel files with inconsistent column names.",
+          "Clean GST invoice data with duplicate invoice numbers, null customer IDs and incorrect date formats.",
+          "Combine employee data from multiple files without accidentally multiplying rows (avoiding Cartesian/many-to-many join explosion).",
+          "Explain how you would use Alteryx for complex preparation and Power Query for model-specific transformations."
+        ],
+        masteryTest: "Build a reusable ingestion process that loads multiple files, standardizes schemas, handles errors, removes duplicates appropriately and reconciles row counts and amounts against the source.",
+        interviewBlueprint: `• 12 Inconsistent Excel Schemas: Create a mapping table (OldColumnName -> StandardColumnName) and use Table.RenameColumns(Source, MappingList, MissingField.Ignore) inside your helper M function before Table.Combine().
+• GST Invoice Cleaning: 1) Parse dates using Date.FromText(val, [Format="dd-MM-yyyy", Culture="en-IN"]) or "en-IN" locale. 2) Sort by ModifiedTimestamp DESC, wrap in Table.Buffer() (if not folding), and apply Table.Distinct({"GST_Invoice_No"}). 3) Replace null CustomerIDs with "-1" ("Unknown/Unregistered B2C") to preserve referential integrity.
+• Alteryx vs Power Query Split: Use Alteryx upstream for heavy multi-source joins, spatial/regex parsing, invoice-level reconciliation, and outputting a clean staging table/parquet. Use Power Query for final star-schema shaping, RangeStart/RangeEnd incremental partitioning, and data-type binding.`
+      },
+      {
+        id: "m3",
+        num: 3,
+        phase: 2,
+        phaseName: "Phase 2 — Data Modeling and DAX",
+        title: "Data Modeling and Relationships",
+        priority: "Critical",
+        learn: [
+          "Fact tables, dimension tables, star schema and snowflake schema.",
+          "Grain and granularity definition (atomic vs aggregated facts).",
+          "Primary keys, foreign keys and integer surrogate keys.",
+          "One-to-many (1:*), one-to-one (1:1) and many-to-many (*:*) relationships.",
+          "Active vs. inactive relationships (and activating via USERELATIONSHIP).",
+          "Single-direction vs. bidirectional filtering (and why Bi-Di hurts performance and causes ambiguity).",
+          "Role-playing dimensions (Order Date, Ship Date, Accounting Date), bridge tables and marked Date dimensions.",
+          "Handling Slowly Changing Dimensions (SCD Type 1 overwrite vs SCD Type 2 historical row versioning with Start/End dates).",
+          "Referential integrity, duplicate keys, blank row behavior and orphan records.",
+          "Why model design directly governs DAX simplicity, correctness and VertiPaq performance."
+        ],
+        scenarios: [
+          "Design a model for a retail company with orders, products, customers, stores and returns.",
+          "Design a marketing model combining campaign spend, impressions, clicks, conversions and revenue.",
+          "An employee appears multiple times because their department history is stored in the same table. How would you model it?",
+          "Why are total sales incorrect (repeating or inflated) after joining two fact tables directly?"
+        ],
+        masteryTest: "Design a star schema on paper, identify the grain of every table, establish relationships and explain how filters propagate.",
+        interviewBlueprint: `• Retail Orders vs Returns: Never join Fact_Orders directly to Fact_Returns (different grain & timing). Keep them as two separate fact tables sharing conformed dimensions (Dim_Date, Dim_Product, Dim_Customer, Dim_Store).
+• Employee Department History (SCD Type 2): Split into Dim_Employee_Current (1 row per EmpID for current reporting) or assign a Surrogate Key (EmpHistKey) per tenure slice (EmpID + Dept + EffectiveStartDate + EffectiveEndDate) and link facts at the historical grain, or resolve via date-between logic.
+• Why Joining Two Fact Tables Fails: Fact tables exist at different grains (e.g., Daily Campaign Spend vs Order-Level Conversions). Joining them directly creates a Many-to-Many (*:*) relationship, multiplying spend across every conversion row or dropping unmatched dates. Always filter across Conformed Dimensions!`
+      },
+      {
+        id: "m4",
+        num: 4,
+        phase: 2,
+        phaseName: "Phase 2 — Data Modeling and DAX",
+        title: "DAX Fundamentals",
+        priority: "Critical",
+        learn: [
+          "1. Measures (dynamic filter evaluation, zero RAM cost at rest) vs. Calculated Columns (VertiPaq RAM cost, row context) vs. Calculated Tables.",
+          "2. Basic Aggregations: SUM, COUNT, COUNTROWS, DISTINCTCOUNT, MIN, MAX and AVERAGE.",
+          "3. Iterators: SUMX, AVERAGEX, MINX, MAXX, RANKX.",
+          "4. Row context (iteration/calculated column) vs. Filter context (slicers, rows, columns, CALCULATE).",
+          "5. CALCULATE and CALCULATETABLE execution order.",
+          "6. Context transition (how CALCULATE turns an active row context into an equivalent filter context).",
+          "7. Table & Lookup functions: FILTER, VALUES, DISTINCT, SELECTEDVALUE, RELATED and RELATEDTABLE.",
+          "8. Filter Modifiers: ALL, REMOVEFILTERS, ALLSELECTED, ALLEXCEPT and KEEPFILTERS.",
+          "9. Variables with VAR and RETURN (performance caching, readability, debugging).",
+          "10. Defensive DAX: DIVIDE, IF, SWITCH(TRUE(), ...), ISBLANK, COALESCE and error-resistant measures."
+        ],
+        scenarios: [
+          "Calculate revenue from quantity × selling price (and why SUM(Qty) * SUM(Price) is mathematically wrong).",
+          "Calculate net sales after returns and discounts.",
+          "Calculate sales contribution by product category.",
+          "Calculate each region's share of national sales.",
+          "Calculate an employee's salary as a percentage of their department's payroll.",
+          "Explain why a measure returns the exact same total value for every single product in a matrix."
+        ],
+        masteryTest: "Write 15 DAX measures independently and explain how each responds to slicers, visual filters and relationships.",
+        interviewBlueprint: `• Why a Measure Repeats the Same Value Across Every Row:
+  1) Missing or inactive relationship between the Dimension on the visual rows (e.g., Dim_Product) and the Fact table.
+  2) Incorrect filter direction (e.g., Fact is on the 1-side or trying to filter a Dimension using a Fact column without cross-filtering).
+  3) Wrapping the entire table in ALL(Fact_Sales) inside CALCULATE when you only intended to clear a single column filter.
+  4) Writing SUM(Fact_Sales[Amount]) without wrapping it in CALCULATE() when referencing it inside a row-context iteration (missing context transition).`
+      },
+      {
+        id: "m5",
+        num: 5,
+        phase: 2,
+        phaseName: "Phase 2 — Data Modeling and DAX",
+        title: "Advanced DAX and Business Calculations",
+        priority: "Critical",
+        learn: [
+          "Filter context modification, filter lineage and filter propagation.",
+          "RANKX, TOPN, CONCATENATEX and dynamic ranking with tie handling (DENSE).",
+          "Running totals and Pareto / cumulative percentages.",
+          "Year-to-date (TOTALYTD / DATESYTD), month-to-date and quarter-to-date calculations.",
+          "Previous month, previous year (SAMEPERIODLASTYEAR / DATEADD) and YoY growth %.",
+          "Rolling 3-, 6- and 12-month averages/totals using DATESINPERIOD.",
+          "Dynamic measures and Field Parameters.",
+          "Disconnected tables and What-If parameters (GENERATESERIES).",
+          "Relationship & Hierarchy Functions: USERELATIONSHIP, TREATAS, CROSSFILTER and ISINSCOPE.",
+          "Calculation Groups (Tabular Editor) and dynamic format strings.",
+          "Semi-additive measures: LASTDATE, LASTNONBLANKVALUE, CLOSINGBALANCEMONTH for balances/inventory.",
+          "Blank handling, zero denominators and fixing Matrix Grand Totals that do not equal the sum of visible rows."
+        ],
+        scenarios: [
+          "Compare FY 2025–26 and FY 2024–25, accounting for the Indian April–March financial year.",
+          "Rank the top five sales regions dynamically as slicers change.",
+          "Calculate month-end outstanding receivables rather than summing daily balances.",
+          "Calculate ROAS (Return on Ad Spend), CPA (Cost Per Acquisition) and conversion rates.",
+          "Display revenue, margin and growth using a dynamic metric selector."
+        ],
+        masteryTest: "Solve at least 20 DAX problems, including 5 complex scenarios involving multiple tables and filters.",
+        interviewBlueprint: `• Indian Financial Year (April 1 – March 31) YTD:
+  Always pass the optional year-end date parameter "03-31" into TOTALYTD or DATESYTD:
+  Sales FY YTD = CALCULATE([Total Sales], DATESYTD(Dim_Date[Date], "03-31"))
+• Fixing Incorrect Grand Totals:
+  When a measure uses conditional logic (e.g. IF([Sales] > 100000, [Bonus], 0)), the Grand Total evaluates the condition at the aggregate level. Fix it by iterating over the dimension grain:
+  Correct Total = SUMX(VALUES(Dim_Region[Region]), [Regional Bonus Measure])`
+      },
+      {
+        id: "m6",
+        num: 6,
+        phase: 3,
+        phaseName: "Phase 3 — Performance, Service and Production",
+        title: "Performance Optimization",
+        priority: "Critical",
+        learn: [
+          "VertiPaq in-memory engine and columnar storage fundamentals (Value Encoding, Hash/Dictionary Encoding, Run-Length Encoding).",
+          "Cardinality, compression efficiency and reducing .pbix model size (splitting DateTime into Date + Time, removing GUIDs).",
+          "Power BI Desktop Performance Analyzer (DAX Query time vs Visual Display time vs Other wait queue).",
+          "DAX Studio: Server Timings (FE vs SE, SE CPU, SE Queries count, datacache hits) and Query Plans.",
+          "Formula Engine (single-threaded, complex logic, CallbackDataID) vs. Storage Engine (multi-threaded, fast VertiPaq scans).",
+          "Reducing unnecessary columns, historical rows, bidirectional relationships and high-visual counts on a single page.",
+          "Optimizing iterators: pushing FILTER(Table, ...) into column predicates, replacing IF inside SUMX, caching with VAR.",
+          "Import vs. DirectQuery performance trade-offs (Maximum Connections, SQL query complexity).",
+          "User-defined Aggregations, Composite Models and Incremental Refresh partitioning.",
+          "Distinguishing source-query, semantic model, DAX, visual-rendering and Premium/Fabric capacity bottlenecks."
+        ],
+        scenarios: [
+          "A Power BI report containing 25 million transaction rows loads slowly.",
+          "A matrix takes 15 seconds to render after adding a measure.",
+          "Refresh duration has increased from 10 minutes to 50 minutes.",
+          "A DirectQuery report puts excessive load on the production database."
+        ],
+        masteryTest: "Take a slow report, identify the bottleneck, implement improvements and document before-and-after timings. Never claim an improvement without measurement.",
+        interviewBlueprint: `• 15-Second Matrix Triage: Run Performance Analyzer -> Copy DAX query into DAX Studio -> Turn on Server Timings. Usually caused by: 1) Filtering an entire 25M-row fact table (FILTER(Fact_Sales, ...)) instead of a column predicate, forcing millions of Formula Engine iterations (CallbackDataID). 2) Cross-joining high-cardinality dimensions due to a measure returning a non-blank static value (e.g., "+ 0" at the end of a measure).
+• 10m -> 50m Refresh Jump: 1) Broken Query Folding (someone added an M step like Table.Buffer or complex text split before filtering). 2) Sort/Merge on unindexed source columns. 3) Lack of Incremental Refresh (re-pulling 5 years of history daily instead of last 7 days).`
+      },
+      {
+        id: "m7",
+        num: 7,
+        phase: 3,
+        phaseName: "Phase 3 — Performance, Service and Production",
+        title: "Power BI Service, Refresh and Deployment",
+        priority: "Critical",
+        learn: [
+          "Workspaces, Apps (Audience groups), reports and semantic model Build vs Read permissions.",
+          "Publishing and replacing existing content safely (separating golden Semantic Model PBIX from thin Report PBIX files).",
+          "Scheduled refresh limits (8/day Pro, 48/day Premium/Fabric), refresh history and failure diagnosis.",
+          "On-premises Data Gateway (Standard vs Personal), gateway clusters, load balancing and data-source mapping.",
+          "Credentials, OAuth2 token expiry, Privacy Levels (Organizational vs Public vs Private) and Service Principals.",
+          "Deployment Pipelines and Dev / Test / Production lifecycle workflows.",
+          "Deployment rules using Parameters for environment-specific server/database switching.",
+          "Incremental refresh policies, hybrid real-time DirectQuery partitions, and XMLA partition management.",
+          "Power BI REST API & Power Automate refresh triggers (triggering refresh immediately after upstream ETL finishes).",
+          "Version control (.pbip / TMDL), Tabular Editor and ALM Toolkit schema diffing & deployment."
+        ],
+        scenarios: [
+          "A report works in Desktop but fails to refresh in the Service.",
+          "A gateway cluster loses one node.",
+          "Publishing an updated PBIX breaks an existing report.",
+          "A scheduled refresh fails after a database password changes."
+        ],
+        masteryTest: "Publish a report, configure refresh, simulate a failure, diagnose the cause and document a production-safe recovery process.",
+        interviewBlueprint: `• Works in Desktop, Fails in Service (Top 5 Causes):
+  1) Local file path (C:\\Users\\Rihas\\...) not mapped to an On-Premises Gateway or UNC path (\\\\Server\\Share).
+  2) Privacy Level mismatch (combining a 'Public' web API with an 'Organizational' SQL Server table triggers the Formula.Firewall error in Service).
+  3) Expired OAuth2 credentials or changed DB password in Semantic Model Settings -> Data Source Credentials.
+  4) Out-of-memory error during refresh (refresh requires ~2x the model's RAM footprint simultaneously).
+  5) Missing 64-bit ODBC/Oracle/Snowflake driver on the Gateway machine.`
+      },
+      {
+        id: "m8",
+        num: 8,
+        phase: 3,
+        phaseName: "Phase 3 — Performance, Service and Production",
+        title: "Security and Governance",
+        priority: "Critical",
+        learn: [
+          "Static Row-Level Security (hardcoded rules per role) vs. Dynamic Row-Level Security (table-driven).",
+          "USERPRINCIPALNAME() vs USERNAME() and designing User-to-Region / Manager hierarchy mapping tables.",
+          "Testing roles in Desktop ('View as') and in Power BI Service ('Test as role' on the Semantic Model Security page).",
+          "Critical Governance Rule: Workspace permissions (Admin, Member, Contributor vs Viewer) and how they interact with RLS.",
+          "Object-Level Security (OLS) via Tabular Editor to hide sensitive columns (e.g., Salary/PAN) or entire tables from metadata.",
+          "Least-privilege access, Microsoft Purview sensitivity labels, and preventing unauthorized Excel exports.",
+          "Why RLS does not replace source-system security or proper workspace role governance.",
+          "Handling Many-to-Many security mappings safely using security filter direction or TREATAS/IN."
+        ],
+        scenarios: [
+          "Regional managers should only see their own state or territory (while the National Head sees all states).",
+          "An HR dashboard must restrict salary information from general HR analysts while showing headcount.",
+          "A finance report contains sensitive customer data.",
+          "A user can see all data (more than expected) right after being added to a workspace. Why?"
+        ],
+        masteryTest: "Implement dynamic RLS for regional managers and verify behavior using multiple test identities and permission configurations.",
+        interviewBlueprint: `• Why a User Sees All Data Despite Active RLS (Classic Interview Trap!):
+  RLS ONLY applies to users with the 'Viewer' role in a Workspace (or consumers accessing via a published Power BI App with Read permissions). If the user was added to the Workspace as an Admin, Member, or Contributor, Power BI bypasses RLS completely because they have Edit rights on the model!
+• Restricting Salary Column in HR Dashboard:
+  RLS filters rows, NOT columns. To hide the [Base Salary] column completely so users can't even see it exist in Analyze in Excel, configure Object-Level Security (OLS) in Tabular Editor—or split confidential compensation facts into a separate secured model.`
+      },
+      {
+        id: "m9",
+        num: 9,
+        phase: 3,
+        phaseName: "Phase 3 — Performance, Service and Production",
+        title: "Storage Modes and Modern Power BI Architecture",
+        priority: "High",
+        learn: [
+          "Import, DirectQuery and Live Connection in depth: query latency, refresh overhead and DAX limitations.",
+          "Composite models and Dual storage mode (why conformed Dimensions MUST be set to Dual).",
+          "Direct Lake fundamentals in Microsoft Fabric (reading Delta Parquet files directly from OneLake into VertiPaq without import refresh or SQL translation).",
+          "User-defined Aggregations and automatic aggregations for massive semantic models (100M+ rows).",
+          "Semantic model design for enterprise reporting (Hub-and-Spoke golden datasets + chained composite models).",
+          "Data Warehouse vs. Lakehouse vs. Semantic Model responsibilities (Roche's Maxim of Data Transformation).",
+          "Where logic belongs: Source SQL/Alteryx vs. Power Query (M) vs. DAX Calculated Columns vs. DAX Measures.",
+          "Cloud data integration patterns across SQL Server, AWS S3/Redshift, Azure Synapse and Microsoft Fabric."
+        ],
+        scenarios: [
+          "Compare Import vs DirectQuery vs Composite Aggregations for a 150-million-row e-commerce table in Amazon Redshift.",
+          "Explain when Microsoft Fabric Direct Lake falls back to DirectQuery (framing, SQL views, row-level security rules).",
+          "Explain Roche's Maxim: why you should push transformations as far upstream (SQL/Redshift/Alteryx) as possible."
+        ],
+        masteryTest: "Compare two architecture options for a large business dataset and justify the choice using latency, freshness, cost, source capacity, security and maintainability.",
+        interviewBlueprint: `• Enterprise Composite Pattern for Redshift / Synapse (150M+ Rows):
+  1) Create an Imported Aggregation table grouped by Date, Region, and Category (reduces 150M rows to ~500K rows -> 95% of executive visuals hit fast in-memory Import).
+  2) Keep the atomic Invoice-line Fact table in DirectQuery for drill-through pages only.
+  3) Set Dim_Date, Dim_Region, and Dim_Product to 'Dual' storage mode so Power BI can satisfy slicers in-memory for Import visuals and push clean SQL INNER JOINs when drilling down to DirectQuery.`
+      },
+      {
+        id: "m10",
+        num: 10,
+        phase: 4,
+        phaseName: "Phase 4 — Reporting and Real-World Delivery",
+        title: "Visualization and Report UX",
+        priority: "Medium–High",
+        learn: [
+          "Choosing the right visual for the business question (bar/column for ranking, line for trends, waterfall for variance bridges, scatter for correlation).",
+          "Drill-down (hierarchy within one visual) vs. Drill-through (passing filter context to a dedicated detail page).",
+          "Custom Report-Page Tooltips for contextual hover analysis.",
+          "Bookmarks (Data vs Display vs Current Page states), buttons and app-like layer navigation.",
+          "Slicer synchronization across pages and editing Visual Interactions (Filter vs Highlight vs None).",
+          "Rule-based & Measure-driven Conditional Formatting (hex codes via DAX), KPI indicators and dynamic titles.",
+          "Field Parameters for dynamic dimension/metric switching on a single chart.",
+          "Accessibility, keyboard tab order, colorblind-safe palettes, mobile layout and visual consistency.",
+          "Custom SVG progress bars and HTML container cards: embedding inline SVG strings in DAX (`data:image/svg+xml;utf8,`), performance impact, and maintenance governance."
+        ],
+        scenarios: [
+          "Create an executive sales dashboard for a national retailer.",
+          "Design a campaign dashboard for a media agency.",
+          "Create a finance dashboard that distinguishes actuals, budgets and variances.",
+          "Explain why a pie chart is not always the best choice for comparing many categories (and how you use SVG/IBCS variance bars instead)."
+        ],
+        masteryTest: "Build a three-page report: executive summary, detailed analysis and drill-through investigation. Each page should answer a specific business question.",
+        interviewBlueprint: `• Leveraging Your Custom SVG / HTML Card Experience in Interviews:
+  Highlight how you avoid heavy third-party AppSource visuals (which trigger separate sandboxed iframe renders and security approvals) by building lightweight DAX-generated SVG progress bars / bullet charts inside native Matrix/Table columns (setting Data Category = Image URL). Emphasize that you keep SVG measures strictly on summary rows (<100 visible rows) so Formula Engine string concatenation remains sub-50ms.`
+      },
+      {
+        id: "m11",
+        num: 11,
+        phase: 4,
+        phaseName: "Phase 4 — Reporting and Real-World Delivery",
+        title: "SQL and Upstream Data Engineering",
+        priority: "Critical",
+        learn: [
+          "Inner, Left, Right, Full Outer, Cross and Self joins.",
+          "CTEs (WITH clauses), correlated subqueries, CASE WHEN pivoting and HAVING vs WHERE.",
+          "Window Ranking Functions: ROW_NUMBER(), RANK(), DENSE_RANK(), NTILE().",
+          "Window Offset & Frame Functions: LAG(), LEAD(), FIRST_VALUE(), and running totals (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW).",
+          "Duplicate detection (GROUP BY ... HAVING COUNT(*) > 1) and safe deduplication with CTE + ROW_NUMBER.",
+          "NULL handling (COALESCE, ISNULL, NULLIF) and Left Anti-Joins (LEFT JOIN ... WHERE b.id IS NULL vs NOT EXISTS).",
+          "Clustered vs Non-Clustered Indexes, Sargability (avoiding YEAR(order_date) = 2026 in WHERE), Execution Plans and Redshift Sort/Dist keys.",
+          "Stored Procedures vs Views vs Materialized Views (and why Power BI Query Folding prefers Views over Stored Procs).",
+          "Incremental extraction (watermark timestamps), ETL validation and source-to-report reconciliation queries.",
+          "SQL vs. Power Query vs. DAX: architectural decision matrix on where each operation belongs."
+        ],
+        scenarios: [
+          "Find each customer's latest transaction.",
+          "Find the second-highest salary in every department (handling ties properly with DENSE_RANK).",
+          "Identify duplicate GST invoice numbers and isolate the latest valid record.",
+          "Calculate month-over-month (MoM) sales growth % using LAG().",
+          "Reconcile transaction totals between source SQL tables and a Power BI report."
+        ],
+        masteryTest: "Complete 20 SQL problems covering joins, window functions, aggregation, NULLs and performance.",
+        interviewBlueprint: `• Why NOT IN Fails When NULLs Exist (Classic SQL Trap):
+  SELECT * FROM Customers WHERE CustomerID NOT IN (SELECT CustomerID FROM Blacklist) returns ZERO rows if Blacklist.CustomerID contains even a single NULL! Always use NOT EXISTS or a LEFT JOIN ... WHERE b.CustomerID IS NULL.
+• Sargability for Fast Power BI Refreshes:
+  Never write WHERE YEAR(InvoiceDate) = 2026 in your SQL view—applying a function to an indexed column forces a full table scan. Write WHERE InvoiceDate >= '2026-01-01' AND InvoiceDate < '2027-01-01'.`
+      },
+      {
+        id: "m12",
+        num: 12,
+        phase: 4,
+        phaseName: "Phase 4 — Reporting and Real-World Delivery",
+        title: "End-to-End Projects and Interview Defense",
+        priority: "Critical",
+        learn: [
+          "Project A — Marketing Campaign Analytics: Spend, impressions, clicks, conversions, revenue, ROAS, CPA, attribution & Field Parameters.",
+          "Project B — HR & Workforce Analytics: Headcount, attrition rate, recruitment funnel, tenure bands, SCD Type 2 department history & Dynamic RLS/OLS.",
+          "Project C — Finance & Reconciliation: Actuals vs Budget variance bridges, GST invoice-level reconciliation, duplicate detection via Alteryx/SQL & P&L formatting.",
+          "Structuring your 2-minute architectural pitch: Business Problem → Source & Volume → ETL (Alteryx/SQL/PQ) → Star Schema Grain → Complex DAX → Perf & Governance → Measurable Business Impact.",
+          "Defending technical trade-offs under cross-examination without inventing fake metrics."
+        ],
+        scenarios: [
+          "Walk me through your most complex Power BI project end-to-end.",
+          "How did you validate that your Marketing ROAS or Finance Variance numbers matched the source system 100%?",
+          "Tell me about a time a report was intolerably slow or failed in production—how did you diagnose and fix it?",
+          "Why did you do that transformation in SQL/Alteryx instead of DAX or Power Query?"
+        ],
+        masteryTest: "Complete all 10 defense questions for Projects A, B, and C in the Project Defense Studio tab and deliver a 5-minute verbal walkthrough for each.",
+        interviewBlueprint: `• Head over to the '🛡️ 3-Project Defense Studio' tab at the top of this app to fill in and rehearse all 30 structured defense answers across Marketing, HR, and Finance!`
+      }
+    ];
+
+    // =========================================================================
+    // 2. CODE VAULT DATA (PRODUCTION TEMPLATES FOR INDIAN INTERVIEWS)
+    // =========================================================================
+    const CODE_VAULT_ITEMS = [
+      {
+        category: "DAX • Indian Financial Year (Apr–Mar)",
+        title: "FY YTD, Previous FY YTD & YoY Growth %",
+        desc: "Indian interviews almost always test whether you know how to shift standard Jan–Dec calendar functions to the April 1 – March 31 Indian fiscal calendar.",
+        code: `// 1. Base Measure
+Total Net Sales = 
+SUMX(
+    Fact_Sales,
+    (Fact_Sales[Quantity] * Fact_Sales[Unit_Price]) - Fact_Sales[Discount_Amt]
+)
+
+// 2. Indian Financial Year YTD (Year-end passed as "03-31")
+Sales FY YTD = 
+CALCULATE(
+    [Total Net Sales],
+    DATESYTD( Dim_Date[Date], "03-31" )
+)
+
+// 3. Prior Financial Year YTD (Exact Period Comparison)
+Sales PY FY YTD = 
+CALCULATE(
+    [Sales FY YTD],
+    SAMEPERIODLASTYEAR( Dim_Date[Date] )
+)
+
+// 4. Error-Resistant YoY % Growth
+Sales FY YoY % = 
+VAR _CurrentFY = [Sales FY YTD]
+VAR _PriorFY   = [Sales PY FY YTD]
+RETURN
+    IF(
+        NOT ISBLANK(_CurrentFY) && NOT ISBLANK(_PriorFY),
+        DIVIDE( _CurrentFY - _PriorFY, _PriorFY )
+    )`
+      },
+      {
+        category: "DAX • Ranking & Context Transition",
+        title: "Dynamic Top N Regions with 'Others' Bucket & Matrix Total Fix",
+        desc: "Handles slicer changes via ALLSELECTED, avoids dense-rank traps, and ensures grand totals sum accurately.",
+        code: `Region Sales Rank = 
+IF(
+    ISINSCOPE( Dim_Region[Region_Name] ),
+    RANKX(
+        ALLSELECTED( Dim_Region[Region_Name] ),
+        [Total Net Sales],
+        ,
+        DESC,
+        DENSE
+    )
+)
+
+// Share of National Sales (Ignoring Regional Slicers, Respecting Date Slicer)
+Regional Share of National Sales % = 
+VAR _RegionSales = [Total Net Sales]
+VAR _NationalSales = 
+    CALCULATE(
+        [Total Net Sales],
+        REMOVEFILTERS( Dim_Region )
+    )
+RETURN
+    DIVIDE( _RegionSales, _NationalSales )`
+      },
+      {
+        category: "DAX • Semi-Additive Finance & HR",
+        title: "Month-End Outstanding Receivables & Active Headcount",
+        desc: "Balances and headcount cannot be summed across days. Use LASTNONBLANKVALUE or date-between snapshots.",
+        code: `// Finance: Month-End Closing Receivables Balance
+Closing AR Balance = 
+CALCULATE(
+    SUM( Fact_Receivables[Outstanding_Balance] ),
+    LASTDATE( Dim_Date[Date] )
+)
+
+// HR: Active Headcount on Any Selected Period End (SCD / Tenure Logic)
+Active Headcount = 
+VAR _MaxDateInContext = MAX( Dim_Date[Date] )
+RETURN
+    CALCULATE(
+        COUNTROWS( Dim_Employee ),
+        Dim_Employee[Hire_Date] <= _MaxDateInContext,
+         ( ISBLANK(Dim_Employee[Exit_Date]) || Dim_Employee[Exit_Date] > _MaxDateInContext ),
+        REMOVEFILTERS( Dim_Date )
+    )`
+      },
+      {
+        category: "DAX • Security (Dynamic RLS)",
+        title: "Dynamic Row-Level Security with National Manager Override",
+        desc: "Placed as a filter expression on Dim_Region inside Manage Roles. Filters regional managers to their mapped states while allowing CXOs with 'ALL' access to see everything.",
+        code: `// Role Filter on 'Dim_Region' table:
+VAR _CurrentUser = USERPRINCIPALNAME()
+VAR _IsNationalAccess = 
+    CALCULATE(
+        COUNTROWS( Bridge_User_Region ),
+        Bridge_User_Region[User_Email] = _CurrentUser,
+        Bridge_User_Region[Region_Code] = "ALL"
+    ) > 0
+RETURN
+    _IsNationalAccess
+    || Dim_Region[Region_Code] IN 
+       CALCULATETABLE(
+           VALUES( Bridge_User_Region[Region_Code] ),
+           Bridge_User_Region[User_Email] = _CurrentUser
+       )`
+      },
+      {
+        category: "Power Query (M) • ETL & Schema Standardization",
+        title: "Dynamic Multi-File Ingestion + Safe Column Renaming",
+        desc: "Combines monthly Excel sheets where column headers drift slightly across months without throwing 'Column Not Found' refresh failures.",
+        code: `let
+    Source = SharePoint.Files("https://company.sharepoint.com/sites/SalesBI", [ApiVersion = 15]),
+    FilteredFiles = Table.SelectRows(Source, each Text.EndsWith([Name], ".xlsx") and Text.Contains([Folder Path], "/Monthly_GST_Sales/")),
+    
+    // Helper function applied to each binary file
+    TransformFile = (FileBinary as binary, FileName as text) as table =>
+        let
+            Workbook = Excel.Workbook(FileBinary, null, true),
+            FirstSheet = Workbook{0}[Data],
+            Promoted = Table.PromoteHeaders(FirstSheet, [PromoteAllScalars=true]),
+            // Standardize drifting header names safely using MissingField.Ignore
+            Standardized = Table.RenameColumns(
+                Promoted,
+                {
+                    {"Inv No", "GST_Invoice_No"},
+                    {"Invoice Number", "GST_Invoice_No"},
+                    {"Cust_ID", "Customer_ID"},
+                    {"Bill Date", "Invoice_Date"}
+                },
+                MissingField.Ignore
+            ),
+            WithSourceName = Table.AddColumn(Standardized, "Source_File", each FileName, type text)
+        in
+            WithSourceName,
+
+    Combined = Table.Combine(
+         List.Transform(
+            Table.ToRecords(FilteredFiles),
+            each TransformFile(_[Content], _[Name])
+        )
+    ),
+    CleanedNullCustomer = Table.ReplaceValue(Combined, null, "UNREGISTERED_B2C", Replacer.ReplaceValue, {"Customer_ID"})
+in
+    CleanedNullCustomer`
+      },
+      {
+        category: "SQL • Window Functions & Reconciliation",
+        title: "2nd Highest Dept Salary, GST Deduplication & MoM Growth",
+        desc: "The three most frequent live-coding SQL screens in Indian Senior Data Analyst & BI Developer interviews.",
+        code: `-- 1. Second-Highest Salary in Every Department (Handling Ties via DENSE_RANK)
+WITH RankedSalaries AS (
+    SELECT 
+        emp_id,
+        emp_name,
+        department_id,
+        salary,
+        DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS sal_rank
+    FROM hr.employees
+)
+SELECT emp_id, emp_name, department_id, salary
+FROM RankedSalaries
+WHERE sal_rank = 2;
+
+-- 2. Deduplicate GST Invoices (Keep Latest Modified Record Only)
+WITH DeduplicatedGST AS (
+    SELECT 
+        *,
+        ROW_NUMBER() OVER (
+            PARTITION BY gst_invoice_no 
+            ORDER BY modified_timestamp DESC, ingestion_id DESC
+        ) AS rn
+    FROM staging.gst_invoices
+    WHERE gst_invoice_no IS NOT NULL
+)
+SELECT * FROM DeduplicatedGST WHERE rn = 1;
+
+-- 3. Monthly Sales Growth % (MoM) using LAG()
+WITH MonthlySales AS (
+    SELECT 
+        DATE_TRUNC('month', invoice_date) AS sales_month,
+        SUM(net_amount) AS current_month_sales
+    FROM fact.sales
+    GROUP BY 1
+)
+SELECT 
+    sales_month,
+    current_month_sales,
+    LAG(current_month_sales, 1) OVER (ORDER BY sales_month) AS prev_month_sales,
+    ROUND(
+        100.0 * (current_month_sales - LAG(current_month_sales, 1) OVER (ORDER BY sales_month))
+        / NULLIF(LAG(current_month_sales, 1) OVER (ORDER BY sales_month), 0),
+        2
+    ) AS mom_growth_pct
+FROM MonthlySales;`
+      }
+    ];
+
+    // =========================================================================
+    // 3. PROJECT DEFENSE STUDIO DATA (PROJECTS A, B, C + 10 QUESTIONS EACH)
+    // =========================================================================
+    const PROJECTS_DATA = {
+      A: {
+        code: "Project A",
+        title: "Marketing Campaign Analytics & Attribution",
+        pill: "ROAS • CPA • Funnel Conversion • Dynamic KPIs",
+        focusBullets: [
+          "Metrics: Ad Spend, Impressions, Clicks, Conversions, Attributed Revenue, ROAS, CPA, CTR, CVR.",
+          "Features: Multi-channel campaign attribution, YoY/MoM time comparisons, Field Parameters for dynamic KPI selection, Custom SVG funnel/progress cards.",
+          "Engineering: Upstream data unification (SQL/Redshift/Alteryx), grain alignment between Daily Spend and Order-Level Conversions, report optimization."
+        ],
+        prompts: [
+          { q: "1. What business problem were you solving?", hint: "E.g., Marketing leadership lacked a unified view of cross-channel spend vs actual attributed revenue, relying on delayed manual spreadsheets with inconsistent ROAS definitions." },
+          { q: "2. What were the data sources, volumes and refresh requirements?", hint: "Specify ad platforms/tables, CRM/order databases (e.g., Redshift/SQL/Excel budgets), row volumes, and daily morning scheduled refresh SLAs." },
+          { q: "3. What did you personally build?", hint: "Detail your end-to-end ownership: upstream SQL/Alteryx prep, Star Schema design, DAX time-intelligence & ROAS measures, and custom SVG/HTML KPI cards." },
+          { q: "4. Why did you choose that data model?", hint: "Explain how you avoided joining Daily Campaign Spend directly to Order-Level Conversions (*:* trap) by using Conformed Dimensions (Dim_Campaign, Dim_Date, Dim_Channel)." },
+          { q: "5. Which DAX measures were most challenging?", hint: "Highlight Dynamic KPI switching with Field Parameters + Dynamic Format Strings (₹ vs % vs Multiplier for ROAS), or attribution window calculations." },
+          { q: "6. What data-quality problems did you encounter?", hint: "E.g., inconsistent UTM campaign naming conventions, duplicate conversion tracking IDs, currency conversion alignment, or late-arriving attribution data." },
+          { q: "7. How did you improve performance, and how did you measure it?", hint: "Mention Performance Analyzer & DAX Studio Server Timings: removing high-cardinality click-IDs, pushing string parsing upstream, reducing visual render time." },
+          { q: "8. How did you implement security, refresh and deployment?", hint: "Regional/Brand manager RLS, scheduled refresh after upstream ETL completion, Dev/Prod workspace separation." },
+          { q: "9. How did you validate that the numbers were correct?", hint: "Reconciling total ad spend against platform invoices and total conversions against SQL order logs before UAT sign-off." },
+          { q: "10. What measurable business benefit did the solution deliver?", hint: "E.g., eliminated hours of manual weekly reporting, enabled faster budget reallocation away from high-CPA campaigns." }
+        ]
+      },
+      B: {
+        code: "Project B",
+        title: "HR & Workforce Analytics",
+        pill: "Headcount • Attrition • SCD Type 2 • Dynamic RLS/OLS",
+        focusBullets: [
+          "Metrics: Active Headcount, Voluntary/Involuntary Attrition Rate, Avg Tenure, Open Requisitions, Time-to-Fill, Payroll % by Dept.",
+          "Features: Historical employee department/grade tracking (SCD Type 2), organizational hierarchy drill-downs.",
+          "Security: Strict Dynamic RLS for HR Business Partners / Department Heads + Object-Level Security (OLS) or model separation for confidential salary data."
+        ],
+        prompts: [
+          { q: "1. What business problem were you solving?", hint: "E.g., HR & leadership needed accurate historical headcount, attrition hotspots, and compensation visibility without risking confidential payroll exposure." },
+          { q: "2. What were the data sources, volumes and refresh requirements?", hint: "HRMS exports, recruitment trackers, payroll tables, monthly/weekly snapshot cadence." },
+          { q: "3. What did you personally build?", hint: "Data cleansing pipeline, SCD Type 2 historical modeling, semi-additive headcount/attrition DAX measures, and Dynamic RLS security table." },
+          { q: "4. Why did you choose that data model?", hint: "Explain how you modeled employees appearing multiple times due to department/role transfers (SCD Type 2 tenure slices vs current dimension)." },
+          { q: "5. Which DAX measures were most challenging?", hint: "Active Headcount at any historical point in time (HireDate <= MaxDate && (ISBLANK(ExitDate) || ExitDate > MaxDate)) and rolling 12-month annualized attrition." },
+          { q: "6. What data-quality problems did you encounter?", hint: "Missing exit dates for terminated staff, rehired employees with duplicate employee codes, inconsistent department hierarchy mappings." },
+          { q: "7. How did you improve performance, and how did you measure it?", hint: "Replacing row-by-row DAX date-between scans with pre-calculated monthly snapshot tables in SQL/Power Query where appropriate." },
+          { q: "8. How did you implement security, refresh and deployment?", hint: "Dynamic RLS using USERPRINCIPALNAME() mapped to HRBP/Dept hierarchies + testing roles in Service and ensuring users had Viewer-only workspace rights." },
+          { q: "9. How did you validate that the numbers were correct?", hint: "Cross-checking month-end active headcount and exits against official payroll payout registers." },
+          { q: "10. What measurable business benefit did the solution deliver?", hint: "Self-service visibility for department heads into attrition trends while maintaining 100% payroll data compliance." }
+        ]
+      },
+      C: {
+        code: "Project C",
+        title: "Finance, Variance & Invoice Reconciliation",
+        pill: "Actuals vs Budget • GST Recon • Alteryx/SQL ETL",
+        focusBullets: [
+          "Metrics: Revenue, OPEX, EBITDA/Margin, Actuals vs Budget (AoB) Variance ₹ and %, Month-End Receivables, GST Invoice Reconciliation.",
+          "Features: Indian Financial Year (Apr–Mar) time intelligence, Waterfall variance bridges, invoice-level drill-through exception reports.",
+          "Engineering: Alteryx/SQL upstream preparation, duplicate invoice detection, missing record anti-joins, source-to-report penny reconciliation."
+        ],
+        prompts: [
+          { q: "1. What business problem were you solving?", hint: "E.g., Month-end financial close and Actuals vs Budget variance reporting required reconciling thousands of invoices across ERP, GST logs, and Excel budgets." },
+          { q: "2. What were the data sources, volumes and refresh requirements?", hint: "ERP/SQL transaction tables, GST invoice files, departmental budget templates; critical high-frequency refresh during month-end close." },
+          { q: "3. What did you personally build?", hint: "Alteryx/SQL reconciliation workflows, Star Schema bridging daily actuals with monthly budgets, Indian FY DAX measures, and executive P&L variance pages." },
+          { q: "4. Why did you choose that data model?", hint: "Handling multi-grain facts: Atomic Invoice Actuals vs Monthly Department Budgets using conformed dimensions or TREATAS/Bridge tables without inflating budget totals." },
+          { q: "5. Which DAX measures were most challenging?", hint: "Indian FY (Apr–Mar) YTD/QTD comparisons, semi-additive closing receivable balances, and custom matrix subtotal formatting." },
+          { q: "6. What data-quality problems did you encounter?", hint: "Duplicate GST invoice numbers, credit notes/reversals, null customer codes, and mismatched cost-center mappings." },
+          { q: "7. How did you improve performance, and how did you measure it?", hint: "Pushing heavy invoice matching and deduplication upstream into Alteryx/SQL so Power BI imported clean, compressed star-schema tables." },
+          { q: "8. How did you implement security, refresh and deployment?", hint: "Cost-center owner RLS, automated Power Automate/Scheduled refresh alerts, and zero-downtime deployment." },
+          { q: "9. How did you validate that the numbers were correct?", hint: "Automated control totals comparing SQL/Alteryx staging sums against Power BI DAX card totals prior to publishing." },
+          { q: "10. What measurable business benefit did the solution deliver?", hint: "Accelerated month-end reporting cycle and surfaced duplicate/unreconciled invoices automatically." }
+        ]
+      }
+    };
+
+    // =========================================================================
+    // 4. READINESS SCORECARD (10 PILLARS) & 6-WEEK PLAN
+    // =========================================================================
+    const SCORECARD_PILLARS = [
+      { id: "sc_dax", name: "1. DAX", desc: "Solve CALCULATE, context transition, filter removal, ranking, time intelligence (Apr–Mar FY) and totals questions without notes." },
+      { id: "sc_mod", name: "2. Modeling", desc: "Design a star schema, identify table grain, handle SCD Type 2 and diagnose incorrect totals and relationship issues." },
+      { id: "sc_pq", name: "3. Power Query", desc: "Build an ETL flow with merge/append, null/error handling, reusable M functions and query-folding awareness." },
+      { id: "sc_perf", name: "4. Performance", desc: "Diagnose a slow 25M+ row report using Performance Analyzer & DAX Studio and prove that your optimization worked." },
+      { id: "sc_sec", name: "5. Service & Security", desc: "Explain gateway and refresh failures, deploy via pipelines and implement & test Dynamic RLS / OLS." },
+      { id: "sc_sql", name: "6. SQL", desc: "Solve joins, CTEs, window functions (ROW_NUMBER, DENSE_RANK, LAG), deduplication, reconciliation and query optimization." },
+      { id: "sc_rep", name: "7. Reporting & UX", desc: "Build a clear report with appropriate visuals, drill-through, bookmarks, field parameters, SVG KPIs and variance bridges." },
+      { id: "sc_arch", name: "8. Architecture", desc: "Justify Import, DirectQuery, Composite Models or Fabric Direct Lake for a given enterprise workload." },
+      { id: "sc_proj", name: "9. Project Defense", desc: "Explain three projects (Marketing, HR, Finance) end-to-end and handle cross-examination on your technical decisions." },
+      { id: "sc_mock", name: "10. Mock Interview", desc: "Complete a timed 60-minute technical interview covering live DAX, SQL, modeling and production troubleshooting." }
+    ];
+
+    const SIX_WEEK_PLAN = [
+      { week: 1, focus: "Power BI Architecture, Power Query & Data Modeling (Modules 1, 2, 3)", deliverable: "Clean ETL pipeline (multi-file + folding) and verified Star Schema", sqlGoal: "Joins, Anti-Joins & NULL handling (5 problems)" },
+      { week: 2, focus: "DAX Fundamentals & Filter Context (Module 4)", deliverable: "15 working DAX measures with clear verbal explanations of Context Transition", sqlGoal: "CTEs, GROUP BY & CASE WHEN pivoting (5 problems)" },
+      { week: 3, focus: "Advanced DAX & Indian FY Time Intelligence (Module 5)", deliverable: "20 business calculations (Apr–Mar FY, RANKX, Semi-Additive, Totals Fix)", sqlGoal: "Window Functions: ROW_NUMBER, DENSE_RANK, LAG/LEAD (5 problems)" },
+      { week: 4, focus: "Performance, Service, RLS & Deployment (Modules 6, 7, 8)", deliverable: "Optimized report with documented DAX Studio timings, working refresh & Dynamic RLS", sqlGoal: "Deduplication & Source-to-Target Reconciliation queries" },
+      { week: 5, focus: "Modern Architecture, SQL Mastery & Visual UX (Modules 9, 10, 11)", deliverable: "Complete 20-problem SQL set + 3-page Executive/Analysis/Drill-through dashboard", sqlGoal: "Indexing, Sargability & Execution Plans" },
+      { week: 6, focus: "End-to-End Project Walkthroughs & Timed Mock Interviews (Module 12)", deliverable: "Three defended project walkthroughs (Marketing, HR, Finance) + 10/10 Readiness Gate", sqlGoal: "Timed 20-minute rapid-fire SQL + DAX coding drills" }
+    ];
+
+    // =========================================================================
+    // 5. STATE MANAGEMENT (LOCALSTORAGE)
+    // =========================================================================
+    const STORAGE_KEY = "rihas_pbi_mastery_v1";
+    let appState = {
+      checkedItems: {},      // { "m1_learn_0": true, "m1_scen_0": true, "m1_test": true, "week_1": true }
+      scorecard: {},         // { "sc_dax": true, ... }
+      projectNotes: {},      // { "A_0": "My answer...", ... }
+      moduleNotes: {},       // { "m1": "My architecture notes..." }
+      activePhase: "all",
+      activeProject: "A"
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          appState = { ...appState, ...parsed };
+        }
+      } catch (e) {
+        console.warn("Could not read localStorage", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.warn("Could not save to localStorage", e);
+      }
+      updateGlobalStats();
+    }
+
+    function toggleCheck(key) {
+      appState.checkedItems[key] = !appState.checkedItems[key];
+      saveState();
+      renderModules();
+      renderRoadmap();
+    }
+
+    function toggleScorecard(id) {
+      appState.scorecard[id] = !appState.scorecard[id];
+      saveState();
+      renderScorecard();
+    }
+
+    function saveProjectNote(projKey, qIdx, val) {
+      appState.projectNotes[`${projKey}_${qIdx}`] = val;
+      saveState();
+    }
+
+    function saveModuleNote(modId, val) {
+      appState.moduleNotes[modId] = val;
+      saveState();
+    }
+
+    // =========================================================================
+    // 6. RENDERING ENGINE
+    // =========================================================================
+    function updateGlobalStats() {
+      let totalLearn = 0, doneLearn = 0;
+      let totalScen = 0, doneScen = 0;
+      let totalTests = SYLLABUS_MODULES.length, doneTests = 0;
+
+      SYLLABUS_MODULES.forEach(m => {
+        m.learn.forEach((_, idx) => {
+          totalLearn++;
+          if (appState.checkedItems[`${m.id}_learn_${idx}`]) doneLearn++;
+        });
+        m.scenarios.forEach((_, idx) => {
+          totalScen++;
+          if (appState.checkedItems[`${m.id}_scen_${idx}`]) doneScen++;
+        });
+        if (appState.checkedItems[`${m.id}_test`]) doneTests++;
+      });
+
+      const totalItems = totalLearn + totalScen + totalTests;
+      const doneItems = doneLearn + doneScen + doneTests;
+      const pct = totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
+
+      document.getElementById("global-progress-text").textContent = `${pct}%`;
+      document.getElementById("global-progress-bar").style.width = `${pct}%`;
+      document.getElementById("stat-concepts").textContent = `${doneLearn} / ${totalLearn}`;
+      document.getElementById("stat-scenarios").textContent = `${doneScen} / ${totalScen}`;
+      document.getElementById("stat-tests").textContent = `${doneTests} / ${totalTests}`;
+
+      const scCount = SCORECARD_PILLARS.filter(p => appState.scorecard[p.id]).length;
+      document.getElementById("scorecard-badge").textContent = `${scCount}/10`;
+    }
+
+    function renderModules() {
+      const container = document.getElementById("modules-container");
+      const query = (document.getElementById("module-search")?.value || "").toLowerCase().trim();
+
+      const filtered = SYLLABUS_MODULES.filter(m => {
+        if (appState.activePhase !== "all" && m.phase !== appState.activePhase) return false;
+        if (!query) return true;
+        const haystack = [
+          m.title,
+          m.phaseName,
+          ...m.learn,
+          ...m.scenarios,
+          m.masteryTest,
+          m.interviewBlueprint
+        ].join(" ").toLowerCase();
+        return haystack.includes(query);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="glass-panel p-8 rounded-2xl text-center text-gray-400">No modules match your filter. Try clearing the search box.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(m => {
+        const learnTotal = m.learn.length;
+        const learnDone = m.learn.filter((_, i) => appState.checkedItems[`${m.id}_learn_${i}`]).length;
+        const scenTotal = m.scenarios.length;
+        const scenDone = m.scenarios.filter((_, i) => appState.checkedItems[`${m.id}_scen_${i}`]).length;
+        const testDone = !!appState.checkedItems[`${m.id}_test`];
+        const modTotal = learnTotal + scenTotal + 1;
+        const modDone = learnDone + scenDone + (testDone ? 1 : 0);
+        const modPct = Math.round((modDone / modTotal) * 100);
+
+        const priorityBadge = m.priority === "Critical"
+          ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-500/15 text-red-400 border border-red-500/30">Priority: Critical</span>`
+          : `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">Priority: ${m.priority}</span>`;
+
+        return `
+          <div class="glass-panel rounded-2xl border ${testDone ? 'border-emerald-500/40' : 'border-gray-800'} overflow-hidden transition">
+            <!-- Module Header -->
+            <div class="p-5 sm:p-6 bg-gray-900/60 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                  <span class="text-xs font-mono font-bold uppercase px-2 py-0.5 rounded bg-gray-800 text-pbi-yellow">Module ${m.num}</span>
+                  <span class="text-xs text-gray-400 font-medium">${m.phaseName}</span>
+                  ${priorityBadge}
+                  ${testDone ? `<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">✓ Mastery Verified</span>` : ''}
+                </div>
+                <h3 class="text-lg sm:text-xl font-bold text-white">${m.title}</h3>
+              </div>
+
+              <div class="flex items-center gap-4 shrink-0">
+                <div class="text-right">
+                  <div class="text-xs text-gray-400">Module Progress</div>
+                  <div class="text-sm font-mono font-bold ${modPct === 100 ? 'text-emerald-400' : 'text-pbi-yellow'}">${modDone}/${modTotal} (${modPct}%)</div>
+                </div>
+                <div class="w-24 h-2 bg-gray-800 rounded-full overflow-hidden">
+                  <div class="h-full ${modPct === 100 ? 'bg-emerald-400' : 'bg-pbi-yellow'} transition-all" style="width: ${modPct}%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Module Body -->
+            <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- Left 7 Cols: Core Concepts to Learn -->
+              <div class="lg:col-span-7 space-y-3">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400">Core Concepts & Technical Depth (${learnDone}/${learnTotal})</h4>
+                </div>
+                <div class="space-y-2">
+                  ${m.learn.map((item, idx) => {
+                    const key = `${m.id}_learn_${idx}`;
+                    const checked = appState.checkedItems[key] ? "checked" : "";
+                    return `
+                      <label class="flex items-start gap-3 p-2.5 rounded-xl bg-gray-900/50 hover:bg-gray-900 border border-gray-800/80 cursor-pointer transition">
+                        <input type="checkbox" onchange="toggleCheck('${key}')" ${checked} class="custom-checkbox mt-0.5 w-4 h-4 rounded accent-amber-400 shrink-0">
+                        <span class="text-sm text-gray-200 leading-snug">${item}</span>
+                      </label>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+
+              <!-- Right 5 Cols: Indian Interview Scenarios + Mastery Gate -->
+              <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+                <div class="space-y-3">
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400">🇮🇳 Indian Interview Scenarios (${scenDone}/${scenTotal})</h4>
+                  <div class="space-y-2">
+                    ${m.scenarios.map((scen, idx) => {
+                      const key = `${m.id}_scen_${idx}`;
+                      const checked = appState.checkedItems[key] ? "checked" : "";
+                      return `
+                        <label class="flex items-start gap-3 p-3 rounded-xl bg-emerald-950/20 hover:bg-emerald-950/30 border border-emerald-500/20 cursor-pointer transition">
+                          <input type="checkbox" onchange="toggleCheck('${key}')" ${checked} class="custom-checkbox mt-0.5 w-4 h-4 rounded accent-emerald-400 shrink-0">
+                          <span class="text-xs sm:text-sm text-gray-200 leading-snug">${scen}</span>
+                        </label>
+                      `;
+                    }).join("")}
+                  </div>
+
+                  <!-- Expandable Interview Blueprint / Solution Hint -->
+                  <details class="group bg-gray-900/90 border border-gray-800 rounded-xl overflow-hidden">
+                    <summary class="px-4 py-2.5 text-xs font-semibold text-pbi-yellow cursor-pointer flex items-center justify-between hover:bg-gray-800/60">
+                      <span>💡 View Senior Interview Answer Blueprint</span>
+                      <span class="group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="p-4 border-t border-gray-800 text-xs text-gray-300 font-mono whitespace-pre-line leading-relaxed bg-black/40">${m.interviewBlueprint}</div>
+                  </details>
+                </div>
+
+                <!-- Module Mastery Gate + Personal Scratchpad -->
+                <div class="space-y-3 pt-2">
+                  <div class="p-4 rounded-xl ${testDone ? 'bg-emerald-500/10 border border-emerald-500/40' : 'bg-amber-500/10 border border-amber-500/30'}">
+                    <div class="text-xs font-bold uppercase tracking-wider ${testDone ? 'text-emerald-300' : 'text-pbi-yellow'} mb-1">🏆 Module ${m.num} Mastery Gate</div>
+                    <p class="text-xs text-gray-200 leading-relaxed mb-3">${m.masteryTest}</p>
+                    <label class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-lg ${testDone ? 'bg-emerald-500 text-black' : 'bg-gray-900 text-white border border-gray-700'} text-xs font-bold cursor-pointer transition">
+                      <input type="checkbox" onchange="toggleCheck('${m.id}_test')" ${testDone ? 'checked' : ''} class="w-4 h-4 accent-black">
+                      <span>${testDone ? 'Mastery Gate Completed!' : 'Mark Mastery Test Complete'}</span>
+                    </label>
+                  </div>
+
+                  <textarea
+                    rows="2"
+                    oninput="saveModuleNote('${m.id}', this.value)"
+                    placeholder="Personal notes / links / DAX snippets for Module ${m.num}..."
+                    class="w-full bg-gray-900/90 border border-gray-800 rounded-xl p-2.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-pbi-yellow"
+                  >${appState.moduleNotes[m.id] || ''}</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function filterPhase(phase) {
+      appState.activePhase = phase;
+      document.querySelectorAll(".phase-btn").forEach(btn => {
+        btn.className = "phase-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition";
+      });
+      const activeBtn = document.getElementById(`phase-btn-${phase}`);
+      if (activeBtn) {
+        activeBtn.className = "phase-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-pbi-yellow text-black transition";
+      }
+      renderModules();
+    }
+
+    function renderCodeVault() {
+      const container = document.getElementById("codevault-container");
+      container.innerHTML = CODE_VAULT_ITEMS.map((item, idx) => `
+        <div class="glass-panel rounded-2xl border border-gray-800 flex flex-col justify-between overflow-hidden">
+          <div class="p-5 border-b border-gray-800">
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <span class="text-xs font-mono font-semibold text-pbi-yellow">${item.category}</span>
+              <button onclick="copyCode(${idx})" id="copy-btn-${idx}" class="text-xs px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium transition">
+                📋 Copy Code
+              </button>
+            </div>
+            <h3 class="text-base font-bold text-white">${item.title}</h3>
+            <p class="text-xs text-gray-400 mt-1">${item.desc}</p>
+          </div>
+          <pre class="p-4 bg-black/60 text-xs font-mono text-gray-200 overflow-x-auto leading-relaxed flex-1"><code>${escapeHtml(item.code)}</code></pre>
+        </div>
+      `).join("");
+    }
+
+    function copyCode(idx) {
+      navigator.clipboard.writeText(CODE_VAULT_ITEMS[idx].code);
+      const btn = document.getElementById(`copy-btn-${idx}`);
+      btn.textContent = "✓ Copied!";
+      btn.classList.add("text-emerald-400");
+      setTimeout(() => {
+        btn.textContent = "📋 Copy Code";
+        btn.classList.remove("text-emerald-400");
+      }, 1800);
+    }
+
+    function selectProject(projKey) {
+      appState.activeProject = projKey;
+      ["A", "B", "C"].forEach(k => {
+        const btn = document.getElementById(`proj-tab-${k}`);
+        if (k === projKey) {
+          btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-pbi-yellow text-black transition";
+        } else {
+          btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-gray-800 text-gray-300 hover:bg-gray-700 transition";
+        }
+      });
+      renderProjectDefense();
+    }
+
+    function renderProjectDefense() {
+      const proj = PROJECTS_DATA[appState.activeProject];
+      const container = document.getElementById("project-defense-container");
+
+      const completedCount = proj.prompts.filter((_, idx) => {
+        const val = (appState.projectNotes[`${appState.activeProject}_${idx}`] || "").trim();
+        return val.length > 15;
+      }).length;
+
+      container.innerHTML = `
+        <div class="glass-panel rounded-2xl p-6 border border-gray-800 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-5">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-pbi-yellow font-mono text-xs font-bold">${proj.code}</span>
+                <span class="text-xs text-emerald-400 font-semibold">${proj.pill}</span>
+              </div>
+              <h3 class="text-xl font-bold text-white mt-1">${proj.title}</h3>
+              <ul class="mt-2 space-y-1 text-xs text-gray-300 list-disc pl-4">
+                ${proj.focusBullets.map(b => `<li>${b}</li>`).join("")}
+              </ul>
+            </div>
+            <div class="bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-right shrink-0">
+              <div class="text-xs text-gray-400">Defense Readiness</div>
+              <div class="text-lg font-mono font-bold text-pbi-yellow">${completedCount} / 10 Answered</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            ${proj.prompts.map((item, idx) => {
+              const savedVal = appState.projectNotes[`${appState.activeProject}_${idx}`] || "";
+              return `
+                <div class="bg-gray-900/70 border border-gray-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+                  <div>
+                    <h4 class="text-sm font-bold text-white">${item.q}</h4>
+                    <p class="text-xs text-gray-400 mt-1 italic">${item.hint}</p>
+                  </div>
+                  <textarea
+                    rows="4"
+                    oninput="saveProjectNote('${appState.activeProject}',${idx}, this.value)"
+                    placeholder="Write your exact project metrics, table names, and technical defense here..."
+                    class="w-full bg-black/50 border border-gray-700/80 rounded-lg p-3 text-xs text-gray-100 placeholder-gray-600 focus:outline-none focus:border-pbi-yellow leading-relaxed"
+                  >${escapeHtml(savedVal)}</textarea>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderScorecard() {
+      const grid = document.getElementById("scorecard-grid");
+      const count = SCORECARD_PILLARS.filter(p => appState.scorecard[p.id]).length;
+
+      document.getElementById("scorecard-big-number").textContent = `${count} / 10`;
+      const pill = document.getElementById("scorecard-status-pill");
+      if (count === 10) {
+        pill.textContent = "10/10 Interview Ready!";
+        pill.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+      } else if (count >= 7) {
+        pill.textContent = "Strong Contender";
+        pill.className = "px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40";
+      } else {
+        pill.textContent = "Building Mastery";
+        pill.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30";
+      }
+
+      grid.innerHTML = SCORECARD_PILLARS.map(p => {
+        const active = !!appState.scorecard[p.id];
+        return `
+          <div onclick="toggleScorecard('${p.id}')" class="p-5 rounded-2xl border cursor-pointer transition flex items-start gap-4 ${active ? 'bg-emerald-950/25 border-emerald-500/50' : 'glass-panel border-gray-800 hover:border-gray-700'}">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 mt-0.5 ${active ? 'bg-emerald-400 text-black' : 'bg-gray-800 text-gray-400'}">
+              ${active ? '✓' : ''}
+            </div>
+            <div>
+              <h3 class="font-bold text-base ${active ? 'text-emerald-300' : 'text-white'}">${p.name}</h3>
+              <p class="text-xs text-gray-300 mt-1 leading-relaxed">${p.desc}</p>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderRoadmap() {
+      const container = document.getElementById("weeks-container");
+      container.innerHTML = SIX_WEEK_PLAN.map(w => {
+        const key = `week_${w.week}`;
+        const done = !!appState.checkedItems[key];
+        return `
+          <div class="p-5 rounded-2xl border transition flex flex-col justify-between ${done ? 'bg-emerald-950/20 border-emerald-500/40' : 'bg-gray-900/80 border-gray-800'}">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-amber-500/20 text-pbi-yellow">WEEK ${w.week}</span>
+                <label class="flex items-center gap-2 text-xs font-semibold text-gray-300 cursor-pointer">
+                  <input type="checkbox" onchange="toggleCheck('${key}')" ${done ? 'checked' : ''} class="w-4 h-4 accent-emerald-400">
+                  <span>Complete</span>
+                </label>
+              </div>
+              <h4 class="font-bold text-white text-sm mb-2">${w.focus}</h4>
+              <div class="p-3 rounded-xl bg-black/40 border border-gray-800/90 space-y-2 mt-3">
+                <div>
+                  <div class="text-[11px] uppercase tracking-wider text-pbi-yellow font-bold">Required Deliverable</div>
+                  <div class="text-xs text-gray-200 mt-0.5">${w.deliverable}</div>
+                </div>
+                <div class="pt-1 border-t border-gray-800">
+                  <div class="text-[11px] uppercase tracking-wider text-blue-400 font-bold">Continuous SQL Track</div>
+                  <div class="text-xs text-gray-300 mt-0.5">${w.sqlGoal}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // =========================================================================
+    // 7. NAVIGATION, TIMER & BACKUP UTILITIES
+    // =========================================================================
+    function switchTab(tabId) {
+      ["modules", "codevault", "projects", "scorecard", "roadmap"].forEach(id => {
+        document.getElementById(`view-${id}`).classList.add("hidden");
+        const tabBtn = document.getElementById(`tab-${id}`);
+        tabBtn.className = "nav-tab px-5 py-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 whitespace-nowrap flex items-center gap-2";
+      });
+      document.getElementById(`view-${tabId}`).classList.remove("hidden");
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      activeBtn.className = "nav-tab px-5 py-3 text-sm font-semibold border-b-2 border-pbi-yellow text-pbi-yellow whitespace-nowrap flex items-center gap-2";
+    }
+
+    // 90-Minute Focus Study Timer
+    let timerSeconds = 90 * 60;
+    let timerInterval = null;
+
+    function updateTimerUI() {
+      const mins = String(Math.floor(timerSeconds / 60)).padStart(2, "0");
+      const secs = String(timerSeconds % 60).padStart(2, "0");
+      document.getElementById("timer-display").textContent = `${mins}:${secs}`;
+    }
+
+    function toggleTimer() {
+      const btn = document.getElementById("timer-btn");
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = "Resume";
+      } else {
+        btn.textContent = "Pause";
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerUI();
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            btn.textContent = "Done!";
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = null;
+      timerSeconds = 90 * 60;
+      updateTimerUI();
+      document.getElementById("timer-btn").textContent = "Start 90m";
+    }
+
+    function exportBackup() {
+      document.getElementById("data-modal").classList.remove("hidden");
+    }
+
+    function closeDataModal() {
+      document.getElementById("data-modal").classList.add("hidden");
+    }
+
+    function downloadBackupJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const dlAnchor = document.createElement("a");
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `rihas-powerbi-mastery-backup-${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+    }
+
+    function resetAllProgress() {
+      if (confirm("Are you sure you want to clear all checkboxes and project notes?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Initialize Application
+    window.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      updateGlobalStats();
+      renderModules();
+      renderCodeVault();
+      renderProjectDefense();
+      renderScorecard();
+      renderRoadmap();
+    });
+  </script>
+</body>
+</html>
